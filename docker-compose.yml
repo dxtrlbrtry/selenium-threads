@@ -1,0 +1,24 @@
+services:
+  threads-api:
+    build:
+      context: ./api
+      dockerfile: ./Dockerfile
+    environment:
+      - DB_PORT=$DB_PORT
+      - SERVER_PORT=$SERVER_PORT
+      - HOST=$HOST
+    volumes:
+      - $PWD/api/:/api/
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+  postgresql:
+    image: postgres
+    container_name: threads-db
+    environment:
+      POSTGRES_DB: main
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: root
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - ./api/postgres/data:/var/lib/postgresql/data
