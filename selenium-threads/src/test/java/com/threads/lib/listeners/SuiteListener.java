@@ -16,6 +16,12 @@ public class SuiteListener implements ISuiteListener {
     private static int targetExecutionPercentage;
     private static int failThreshold;
 
+    private static int executedCount;
+    private static int totalEstimatedCount;
+    private static int failedCount;
+    private static float execPercentage;
+    private static float failPercentage;
+
     @Override
     public void onStart(ISuite suite) {
         startTime = System.currentTimeMillis();
@@ -33,8 +39,7 @@ public class SuiteListener implements ISuiteListener {
 
     @Override
     public void onFinish(ISuite suite) {
-        long currentTime = System.currentTimeMillis();
-        logger.log("Total duration: " + formatDuration(currentTime - startTime));
+        printResults();
     }
 
     public synchronized static void registerMethodExecutionCount(String testName, String methodName,
@@ -42,52 +47,59 @@ public class SuiteListener implements ISuiteListener {
         testMap.get(testName).get(methodName).registerExecutionCount(paramsCount);
     }
 
-    public synchronized static void registerResult(ITestResult result) {
-        testMap.get(result.getTestContext().getName())
-                .get(result.getMethod().getMethodName())
-                .recordExecution(result);
-        var executedCount = 0;
-        var totalEstimated = 0;
-        var failedCount = 0;
+    private static void refreshResults() {
+        executedCount = 0;
+        totalEstimatedCount = 0;
+        failedCount = 0;
         for (var testName : testMap.keySet()) {
             var test = testMap.get(testName);
             for (var methodName : test.keySet()) {
                 var method = test.get(methodName);
-                totalEstimated += method.getTotalEstimatedExecutionCount();
+                totalEstimatedCount += method.getTotalEstimatedExecutionCount();
                 failedCount += method.getFailedCount();
                 executedCount += method.getExecutedCount();
             }
         }
+        execPercentage = totalEstimatedCount == 0 ? 0
+                : Math.round((float) executedCount / totalEstimatedCount * 1000) / 10.0f;
+        failPercentage = totalEstimatedCount == 0 ? 0
+                : Math.round((float) failedCount / totalEstimatedCount * 1000) / 10.0f;
 
-        var execPercentage = totalEstimated == 0 ? 0
-                : Math.round((float) executedCount / totalEstimated * 1000) / 10.0f;
-        var failPercentage = totalEstimated == 0 ? 0
-                : Math.round((float) failedCount / totalEstimated * 1000) / 10.0f;
-        calculateRemainingTime(execPercentage, targetExecutionPercentage);
-        logger.log("Status: " + execPercentage + "% | " + executedCount + " / " + totalEstimated + " Total"
+    }
+
+    private static void printResults() {
+        calculateRemainingTime();
+        logger.log("Status: " + execPercentage + "% | " + executedCount + " / " + totalEstimatedCount + " Total"
                 + (failedCount > 0 ? " - \u001B[31m" + failedCount + " failed (" + failPercentage + "%)\u001B[0m"
-                        : ""));
+                : ""));
+    }
+
+    public synchronized static void registerResult(ITestResult result) {
+        testMap.get(result.getTestContext().getName())
+                .get(result.getMethod().getMethodName())
+                .recordExecution(result);
+        refreshResults();
+        printResults();
         if (execPercentage >= targetExecutionPercentage) {
-            logger.log(
-                    "Execution threshold of " + targetExecutionPercentage + "% reached, skipping rest of the tests");
             skipTests = true;
+            var log = "Execution threshold of " + targetExecutionPercentage + "% reached, skipping rest of the tests";
+            logger.log(log);
         }
 
         if (failPercentage > failThreshold) {
             skipTests = true;
             var log = "Fail threshold of " + failThreshold + "% has been exceeded. Aborting run";
             logger.err(log);
-            Assert.fail(log);
         }
     }
 
-    private static void calculateRemainingTime(double currentExecPercentage, int targetExecPercentage) {
+    private static void calculateRemainingTime() {
         long currentTime = System.currentTimeMillis();
         long elapsedTime = currentTime - startTime;
         var log = "Elapsed: " + formatDuration(elapsedTime);
 
-        if (currentExecPercentage > 0) {
-            long estimatedTotalTime = (long) (elapsedTime / (currentExecPercentage / targetExecPercentage));
+        if (execPercentage > 0) {
+            long estimatedTotalTime = (long) (elapsedTime / (execPercentage / targetExecutionPercentage));
             long estimatedRemainingTime = estimatedTotalTime - elapsedTime;
             log += " - Total: " + formatDuration(estimatedTotalTime) + " - Remaining: "
                     + formatDuration(estimatedRemainingTime);

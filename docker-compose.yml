@@ -3,12 +3,11 @@ services:
     build:
       context: ./api
       dockerfile: ./Dockerfile
+    container_name: threads-api
     environment:
       - DB_PORT=$DB_PORT
       - SERVER_PORT=$SERVER_PORT
       - HOST=$HOST
-    volumes:
-      - $PWD/api/:/api/
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
   postgresql:

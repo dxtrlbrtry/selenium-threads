@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 @Test(groups = { "@SD-S0001" })
 public class SauceDemoTests extends SauceDemoTestBase {
-  @DataProvider(name = "valid_login", parallel = false)
+  @DataProvider(name = "valid_login", parallel = true)
   public Object[][] createValidLoginData() {
     var users = client.getUsers(new String[] { "valid_login" });
     return users.stream()
@@ -14,7 +14,7 @@ public class SauceDemoTests extends SauceDemoTestBase {
         .toArray(Object[][]::new);
   }
 
-  @DataProvider(name = "invalid_login", parallel = false)
+  @DataProvider(name = "invalid_login", parallel = true)
   public Object[][] createInvalidLoginData() {
     var users = client.getUsers(new String[] { "invalid_login" });
     return users.stream()

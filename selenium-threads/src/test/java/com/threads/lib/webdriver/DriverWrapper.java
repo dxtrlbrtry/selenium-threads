@@ -1,10 +1,12 @@
 package com.threads.lib.webdriver;
 
 import com.threads.lib.Logger.LocalLogger;
+import com.threads.lib.listeners.SuiteListener;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.SkipException;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -34,6 +36,7 @@ public class DriverWrapper {
             } catch (InterruptedException e) {
                 logger.err("Interrupted. Shutting down webdriver");
                 driver.quit();
+                logger.close();
                 Thread.currentThread().interrupt();
             }
         });
@@ -99,9 +102,7 @@ public class DriverWrapper {
     }
 
     private WebElement findElement(By by) {
-        return stepWrapper("I find element " + by.toString(), () -> {
-            return driver.findElement(by);
-        });
+        return stepWrapper("I find element " + by.toString(), () -> driver.findElement(by));
     }
 
     private Optional<WebElement> findElement(By by, boolean failOnError) {
@@ -116,6 +117,9 @@ public class DriverWrapper {
     }
 
     private <TReturn> TReturn stepWrapper(String message, Callable<TReturn> fn) {
+        if (SuiteListener.skipTests) {
+            throw new SkipException("Tests were skipped, aborting current run");
+        }
         logger.log(message);
         try {
             return fn.call();
@@ -128,6 +132,9 @@ public class DriverWrapper {
     }
 
     private void stepWrapper(String message, Runnable fn) {
+        if (SuiteListener.skipTests) {
+            throw new SkipException("Tests were skipped, aborting current run");
+        }
         logger.log(message);
         try {
             fn.run();

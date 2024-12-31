@@ -8,13 +8,24 @@ import java.util.function.Consumer;
 
 public class Logger {
     public record LocalLogger(Consumer<String> logFn, Consumer<String> errFn, Runnable closeFn) {
-        public void log(String message) { logFn.accept(message); }
-        public void err(String message) { errFn.accept(message); }
-        public void close() { closeFn.run(); }
+        public void log(String message) {
+            logFn.accept(message);
+        }
+
+        public void err(String message) {
+            errFn.accept(message);
+        }
+
+        public void close() {
+            closeFn.run();
+        }
     }
 
     private static Logger instance;
-    private Logger() {}
+
+    private Logger() {
+    }
+
     public static Logger getInstance() {
         if (instance == null) {
             instance = new Logger();
@@ -29,7 +40,13 @@ public class Logger {
             "\u001B[33m", // yellow
             "\u001B[34m", // blue
             "\u001B[35m", // purple
-            "\u001B[36m" // cyan
+            "\u001B[36m", // cyan
+            "\u001B[38;5;100m", // dark yellow
+            "\u001B[38;5;202m", // orange
+            "\u001B[38;5;201m", // pink
+            "\u001B[38;5;130m", // brown
+            "\u001B[38;5;154m", // light green
+            "\u001B[38;5;88m" // dark red
     ));
 
     public LocalLogger getLocalLogger(String loggerTag) {
@@ -57,6 +74,7 @@ public class Logger {
 
     private void error(String color, String testName, String message) {
         System.out.println(
-                color + "[" + testName + "-" + Thread.currentThread().getId() + "] " + errorColor + message + resetColor);
+                color + "[" + testName + "-" + Thread.currentThread().getId() + "] " + errorColor + message
+                        + resetColor);
     }
 }

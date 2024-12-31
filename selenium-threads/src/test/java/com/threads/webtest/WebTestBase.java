@@ -16,7 +16,7 @@ import java.util.logging.Level;
 public abstract class WebTestBase {
     protected final static ThreadLocal<DriverWrapper> driver = new ThreadLocal<>();
     private final static ThreadLocal<LocalLogger> logger = new ThreadLocal<>();
-    private final static String outputPath = "output/";
+    private final static String outputPath = "output/webdriver/";
 
     protected abstract String baseUrl();
 
@@ -65,9 +65,18 @@ public abstract class WebTestBase {
         if (!outputDir.exists()) {
             outputDir.mkdirs();
         } else {
-            for (File file : outputDir.listFiles()) {
+            deleteDir(outputDir);
+        }
+    }
+
+    private void deleteDir(File dir) {
+        for (File file : dir.listFiles()) {
+            if (file.isDirectory()) {
+                deleteDir(file);
+            } else {
                 file.delete();
             }
         }
+        dir.delete();
     }
 }

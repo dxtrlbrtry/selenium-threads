@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.1.dtd" >
-<suite name="SauceDemo Full Suite"
+<suite name="saucedemo-full"
        thread-count="2"
        verbose="0"
        preserve-order="false"
@@ -15,13 +15,13 @@
     <listener class-name="com.threads.lib.listeners.MethodListener"/>
     <listener class-name="com.threads.lib.listeners.DataProviderInterceptor"/>
   </listeners>
-  <test enabled="true" name="Firefox SauceDemo Tests" parallel="methods" thread-count="2">
+  <test enabled="true" name="saucedemo-firefox-tests" parallel="methods" thread-count="2">
    <parameter name="browser" value="firefox"/>
     <classes>
       <class name="com.threads.webtest.saucedemo.tests.SauceDemoTests"/>
     </classes>
   </test>
-  <test enabled="true" name="Chrome SauceDemo Tests" parallel="methods" thread-count="2">
+  <test enabled="true" name="saucedemo-chrome-tests" parallel="methods" thread-count="2">
    <parameter name="browser" value="chrome"/>
     <classes>
       <class name="com.threads.webtest.saucedemo.tests.SauceDemoTests"/>

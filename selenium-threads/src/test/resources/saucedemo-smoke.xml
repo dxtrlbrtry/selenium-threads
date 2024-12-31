@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.1.dtd" >
-<suite name="SauceDemo Smoke Suite"
-       thread-count="4"
+<suite name="saucedemo-smoke"
+       thread-count="2"
        verbose="0"
        preserve-order="false"
        share-thread-pool-for-data-providers="true"
-       parallel="methods">
+       parallel="tests">
   <parameter name="failThreshold" value="15"/>
   <parameter name="executionTarget" value="100"/>
   <parameter name="implicitTimeout" value="5000"/>
@@ -21,13 +21,13 @@
     <listener class-name="com.threads.lib.listeners.MethodListener"/>
     <listener class-name="com.threads.lib.listeners.DataProviderInterceptor"/>
   </listeners>
-  <test enabled="false" name="Firefox SauceDemo Tests">
+  <test enabled="true" name="saucedemo-firefox-tests" parallel="methods" thread-count="2">
    <parameter name="browser" value="firefox"/>
     <classes>
       <class name="com.threads.webtest.saucedemo.tests.SauceDemoTests"/>
     </classes>
   </test>
-  <test enabled="true" name="Chrome SauceDemo Tests">
+  <test enabled="true" name="saucedemo-chrome-tests" parallel="methods" thread-count="2">
    <parameter name="browser" value="chrome"/>
     <classes>
         <class name="com.threads.webtest.saucedemo.tests.SauceDemoTests"/>
