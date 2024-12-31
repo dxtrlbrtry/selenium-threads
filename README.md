@@ -18,7 +18,7 @@ This will build both the test and the api project.
 # Run
 
 To run the tests, execute `make run SUITE_XML=<my suite>`. This will start the web api and the database images. The tests will wait until the server starts responding to requests, and the provided xml will be executed afterwards.
-The available suites can be found under selenium-threads/src/resources folder. Note that changes to the suite xmls is reflected when running tests using the `make run...` command. To reflect other code changes when running tests, use the `make debug SUITE_XML=<my_suite>` command, which will mount the whole project inside the docker image.
+The available suites can be found under `selenium-threads/src/test/resources` folder. Note that changes to the suite xmls is reflected when running tests using the `make run...` command. To reflect other code changes when running tests, use the `make debug SUITE_XML=<my_suite>` command, which will mount the whole project inside the docker image.
 
 # Results
 
