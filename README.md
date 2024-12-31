@@ -1,6 +1,7 @@
 # Project description
 
 This project contains a test project, and a web api that serves as a data source for the tests.
+The test project is a Java based test framework using TestNG, implementing the Webdriver library that use Java's multithreading ability to execute tests in browsers in parallel.
 
 ## System requirements
 
@@ -10,6 +11,7 @@ This project contains a test project, and a web api that serves as a data source
 
 # Build
 
+Clone the project and navigate to the root directory.
 To build the project, execute `make build`.
 This will build both the test and the api project.
 

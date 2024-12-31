@@ -3,3 +3,4 @@ output/
 target/
 .vscode
 .idea
+Dockerfile
