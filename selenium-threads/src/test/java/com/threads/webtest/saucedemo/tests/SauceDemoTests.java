@@ -4,6 +4,10 @@ import com.threads.webtest.saucedemo.SauceDemoTestBase;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+/**
+ * Waits were added in order to simulate test duration.
+ */
+
 @Test(groups = { "@SD-S0001" })
 public class SauceDemoTests extends SauceDemoTestBase {
   @DataProvider(name = "valid_login", parallel = true)
