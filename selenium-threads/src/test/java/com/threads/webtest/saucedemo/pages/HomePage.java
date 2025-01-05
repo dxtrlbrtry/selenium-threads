@@ -6,7 +6,7 @@ import com.threads.lib.webdriver.DriverWrapper;
 import org.openqa.selenium.By;
 
 public class HomePage extends PageBase {
-    By products = By.xpath("//span[@data-test='title']");
+    private final By products = By.xpath("//span[@data-test='title']");
 
     @Override
     protected By pageTitle() {
